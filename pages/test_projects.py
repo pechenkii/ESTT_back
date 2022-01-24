@@ -117,7 +117,7 @@ def test_api_schema_projects(get_login_token, api_client):    # проверка
 
 def test_create_project_check_status_code_equals_201(get_login_token, api_client): #проверка создания проекта под залогиненным пользователем, должны получить ответ 201
     data = {
-        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "uuid": "3fa85f64-5717-4552-b3fc-2c963f66afa6",
         "code": "ПТ-РЕК-57А",
         "name": "Тестовый проект 1231",
         "project_type": "d0c6743e-5fa5-e511-9420-005056ae5a80",
@@ -131,6 +131,6 @@ def test_create_project_check_status_code_equals_201(get_login_token, api_client
         "object_type": "4553d1d4-bea7-e511-9423-005056ae5a80"
     }
     response = api_client.post(path="/projects/", headers={"authorization": get_login_token}, verify=False, data = data)
-#    assert response.status_code == 201
+    assert response.status_code == 201
     print(response.json())
 

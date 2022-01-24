@@ -24,7 +24,7 @@ class APIClient: # описание API - клиента для отправки
     def patch(self, path="/", params=None, data=None, headers=None, verify=False, files=None): # инициализация PATCH - запроса на изменение части данных
         url = self.base_address + path
         print("PATCH request to {}".format(url))
-        return requests.put(url=url, params=params, data=data, headers=headers, verify=verify, files=files)
+        return requests.patch(url=url, params=params, data=data, headers=headers, verify=verify, files=files)
 
     def delete(self, path="/", params=None, headers=None, verify=False): # инициализация DELETE - запроса на удаление данных
         url = self.base_address + path
@@ -97,8 +97,8 @@ def get_id_last_estimate_file(get_login_token, api_client, get_id_first_project)
     return id
 
 @pytest.fixture()
-def get_id_last_estimate_file_value(get_login_token, api_client, get_id_first_project, get_id_last_estimate_file): # получение id последнего ... файла сметы у проекта
-    response = api_client.get(path="/estimate-files/" + get_id_last_estimate_file + "/values", headers={'authorization': get_login_token},
+def get_id_last_estimate_file_row(get_login_token, api_client, get_id_first_project, get_id_last_estimate_file): # получение id последней строки сметы у проекта
+    response = api_client.get(path="/projects/" + get_id_first_project + "/estimate-files/" + get_id_last_estimate_file + "/rows", headers={'authorization': get_login_token},
                             verify=False)
     a=[]
     for i in range(len(response.json())):
@@ -107,8 +107,18 @@ def get_id_last_estimate_file_value(get_login_token, api_client, get_id_first_pr
     return id
 
 @pytest.fixture()
-def get_id_last_estimate_file_row(get_login_token, api_client, get_id_first_project, get_id_last_estimate_file): # получение id последней строки сметы у проекта
-    response = api_client.get(path="/projects/" + get_id_first_project + "/estimate-files/" + get_id_last_estimate_file + "/rows", headers={'authorization': get_login_token},
+def get_id_last_estimate_file_value(get_login_token, api_client, get_id_first_project, get_id_last_estimate_file, get_id_last_estimate_file_row): # получение id последнего ... файла сметы у проекта
+    response = api_client.get(path="/projects/" + get_id_first_project + "/estimate-files/" + get_id_last_estimate_file + "/rows/" + get_id_last_estimate_file_row + "/values", headers={'authorization': get_login_token},
+                            verify=False)
+    a=[]
+    for i in range(len(response.json())):
+        a.append(response.json()[i]["id"])
+    id=str(max(a))
+    return id
+
+@pytest.fixture()
+def get_id_last_estimate_report(get_login_token, api_client, get_id_first_project): # получение id последнего отчета сметы у проекта
+    response = api_client.get(path="/projects/" + get_id_first_project + "/estimate-reports", headers={'authorization': get_login_token},
                             verify=False)
     a=[]
     for i in range(len(response.json())):
